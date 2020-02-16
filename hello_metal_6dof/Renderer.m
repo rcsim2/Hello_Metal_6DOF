@@ -445,7 +445,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // NOTE: als we zo roteren zullen we gimbal lock krijgen. (De assen draaien om).
     // We moeten de camera roteren zoals wanneer we in de heli zaten. Dan kun je onbeperkt helemaal rond zonder dat assen veranderen.
     // De heli (camera) heeft daarvoor zijn eigen matrix en je roteert met quaternions.
-    // Voor FPS maakt het niet zoveel uit omdat je een begrenzing hebt op de pitch van de camera waardoor
+    // Voor FPS view maakt het niet zoveel uit omdat je een begrenzing hebt op de pitch van de camera waardoor
     // gimbal lock niet mogelijk is.
     // Bij een heli zit zo'n beperking natuurlijk niet.
     // TODO: walking forward must always be in camera z-axis, not world z-axis
