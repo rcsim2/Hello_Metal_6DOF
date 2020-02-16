@@ -329,14 +329,14 @@ vector_float3 AAPL_SIMD_OVERLOAD quaternion_rotate_vector(quaternion_float q, ve
 //{
 //    pout->x = sin( yaw / 2.0f) * cos(pitch / 2.0f) * sin(roll / 2.0f) + cos(yaw / 2.0f) * sin(pitch / 2.0f) * cos(roll / 2.0f);
 //    pout->y = sin( yaw / 2.0f) * cos(pitch / 2.0f) * cos(roll / 2.0f) - cos(yaw / 2.0f) * sin(pitch / 2.0f) * sin(roll / 2.0f);
-//    pout->z = cos(yaw / 2.0f) * cos(pitch / 2.0f) * sin(roll / 2.0f) - sin( yaw / 2.0f) * sin(pitch / 2.0f) * cos(roll / 2.0f);
+//    pout->z = cos( yaw / 2.0f) * cos(pitch / 2.0f) * sin(roll / 2.0f) - sin(yaw / 2.0f) * sin(pitch / 2.0f) * cos(roll / 2.0f);
 //    pout->w = cos( yaw / 2.0f) * cos(pitch / 2.0f) * cos(roll / 2.0f) + sin(yaw / 2.0f) * sin(pitch / 2.0f) * sin(roll / 2.0f);
 //    return pout;
 //}
 quaternion_float quaternion_rotation_yaw_pitch_roll(float yaw, float pitch, float roll) {
     float x = sin( yaw / 2.0f) * cos(pitch / 2.0f) * sin(roll / 2.0f) + cos(yaw / 2.0f) * sin(pitch / 2.0f) * cos(roll / 2.0f);
     float y = sin( yaw / 2.0f) * cos(pitch / 2.0f) * cos(roll / 2.0f) - cos(yaw / 2.0f) * sin(pitch / 2.0f) * sin(roll / 2.0f);
-    float z = cos(yaw / 2.0f) * cos(pitch / 2.0f) * sin(roll / 2.0f) - sin( yaw / 2.0f) * sin(pitch / 2.0f) * cos(roll / 2.0f);
+    float z = cos( yaw / 2.0f) * cos(pitch / 2.0f) * sin(roll / 2.0f) - sin(yaw / 2.0f) * sin(pitch / 2.0f) * cos(roll / 2.0f);
     float w = cos( yaw / 2.0f) * cos(pitch / 2.0f) * cos(roll / 2.0f) + sin(yaw / 2.0f) * sin(pitch / 2.0f) * sin(roll / 2.0f);
     return quaternion(x, y, z, w);
 }
