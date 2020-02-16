@@ -419,7 +419,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // it should be UPDATED every frame. Same goes for the models.
     // The model (and view/cam) matrix stores the model's orientatien in the world.
     // This must only be updated, no recreated here every frame. And don't use Euler angles to rotate.
-    // En quarternions garanderen niet dat je geen gimbal lock krijgt. No Euler angles is the trick.
+    // En quaternions garanderen niet dat je geen gimbal lock krijgt. No Euler angles is the trick.
     // Klopt, maar in Direct3D deed je daarnaast ook de view update in een separate pass:
     // m_pd3dDevice->SetTransform( D3DTS_VIEW, &matView );
     // Wij zijn hier elke keer de viewMatrix met de modelMatrix aan het vermenigvuldigen.
@@ -444,7 +444,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // Mod rotation
     // NOTE: als we zo roteren zullen we gimbal lock krijgen. (De assen draaien om).
     // We moeten de camera roteren zoals wanneer we in de heli zaten. Dan kun je onbeperkt helemaal rond zonder dat assen veranderen.
-    // De heli (camera) heeft daarvoor zijn eigen matrix en je roteert met quarternions.
+    // De heli (camera) heeft daarvoor zijn eigen matrix en je roteert met quaternions.
     // Voor FPS maakt het niet zoveel uit omdat je een begrenzing hebt op de pitch van de camera waardoor
     // gimbal lock niet mogelijk is.
     // Bij een heli zit zo'n beperking natuurlijk niet.
@@ -458,11 +458,11 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // dat je moet dat doen om de model axes waarbij je die model axes elke
     // frame ook moet updaten met rotatie. En je hebt Gram-Schmidt nodig.
     // Een hoop gedoe dus. Kijk hiervoor in XFile.cpp waar al deze matrix rotatie code aanwezig is.
-    // Maar uiteindelijk hebben we ook in XFile.cpp gemakkelijk gedaan en quarternions gebruikt en wel met:
+    // Maar uiteindelijk hebben we ook in XFile.cpp gemakkelijk gedaan en quaternions gebruikt en wel met:
     // D3DXQuaternionRotationYawPitchRoll()
     // De code voor matrices en model axes updates en Gram-Schmidt hebben we wel actief gehouden, zag ik,
     // zodat we ook over konden schakelen op matrix rotatie. En zodat we die axes handy hadden.
-    // Maar: quarternions rule!!! Rotation without gimbal lock is much easier achieved.
+    // Maar: quaternions rule!!! Rotation without gimbal lock is much easier achieved.
     // NOTE: de modelMatrix stored de model positie en orientatie:
     // From XFile.cpp:
     // NOTE: m_matFileObjectMatrix stores the 6DOF's (position and orientation) of the heli.
@@ -476,7 +476,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     
     
   
-    // Mod rot (with quarternions)
+    // Mod rot (with quaternions)
     // From XFile.cpp
 //    // Quaternions //////////////////////////////////////////////////////////////////
 //    // Yyyyyyyyyyyyoooooooooooo!!!
@@ -526,7 +526,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     
     // From Xfile.cpp
     // To do rotation with matrices we have to do it like this (and Gram-Schmidt orthogonalization step)
-    // Then we have no gimbal lock. But with quarternions is easier.
+    // Then we have no gimbal lock. But with quaternions is easier.
 //    // update object axes
 //    D3DMath_VectorMatrixMultiply(m_vForward, m_vForward, matRotY);
 //    D3DMath_VectorMatrixMultiply(m_vRight, m_vRight, matRotY);
