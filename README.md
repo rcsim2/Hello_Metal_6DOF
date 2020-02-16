@@ -8,6 +8,8 @@ Basic heli 6DOF movement using the Metal API.
 Boilerplate Xcode Metal project showing how to do basic heli 6DOF movement without gimbal lock.
 The infamous XFile.cpp makes it to the net.
 
+![alt text](metal-2-64x64.png "Metal 3")
+
 
 Started as https://github.com/haroldserrano/renderingTextUsingOpenGLiniOS
 But turned into something completely different. Only the font atlas remains...
