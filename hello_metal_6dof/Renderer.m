@@ -21,7 +21,7 @@ static const NSUInteger kMaxBuffersInFlight = 3;
 
 static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
 
-// Git test3
+// Git test4
 
 
 @implementation Renderer
