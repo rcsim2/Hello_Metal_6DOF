@@ -7,7 +7,7 @@ Basic heli 6DOF movement using the Metal API.
 ![alt text](sikorsky.png "Sikorsky")
 
 
-Boilerplate Xcode Metal project showing how to do basic heli 6DOF movement without gimbal lock.
+Boilerplate Xcode Metal project showing how to do basic heli 6DOF movement without [gimbal lock](https://en.wikipedia.org/wiki/Gimbal_lock).
 The infamous XFile.cpp makes it to the net.
 
 
