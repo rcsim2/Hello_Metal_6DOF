@@ -36,6 +36,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
+      customWorkingDirectory = "/Volumes/Part3/Quake/test/Hello_Metal_6DOF/hello_metal_6dof/Output"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
