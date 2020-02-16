@@ -445,9 +445,9 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // NOTE: als we zo roteren zullen we gimbal lock krijgen. (De assen draaien om).
     // We moeten de camera roteren zoals wanneer we in de heli zaten. Dan kun je onbeperkt helemaal rond zonder dat assen veranderen.
     // De heli (camera) heeft daarvoor zijn eigen matrix en je roteert met quaternions.
-    // Voor FPS view maakt het niet zoveel uit omdat je een begrenzing hebt op de pitch van de camera waardoor
+    // Voor een FPS view maakt het niet zoveel uit omdat je een begrenzing hebt op de pitch van de camera waardoor
     // gimbal lock niet mogelijk is.
-    // Bij een heli zit zo'n beperking natuurlijk niet.
+    // Bij een heli zit er zo'n beperking natuurlijk niet.
     // TODO: walking forward must always be in camera z-axis, not world z-axis
     // We need a translation matrix for the camera's coordinate system
     // TODO: These are Euler angles rotations. Strictly no go!!! They cause gimbal lock. /gimbl lok/
@@ -456,7 +456,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // terug transleren.
     // En bovendien gebruikten we in XFile.cpp toch gewoon Euler angle rotation. Maar de echte truc is
     // dat je moet dat doen om de model axes waarbij je die model axes elke
-    // frame ook moet updaten met rotatie. En je hebt Gram-Schmidt nodig.
+    // frame ook moet updaten met rotatie. En je hebt Gram-Schmidt orthogonalization nodig.
     // Een hoop gedoe dus. Kijk hiervoor in XFile.cpp waar al deze matrix rotatie code aanwezig is.
     // Maar uiteindelijk hebben we ook in XFile.cpp gemakkelijk gedaan en quaternions gebruikt en wel met:
     // D3DXQuaternionRotationYawPitchRoll()
@@ -472,7 +472,9 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // | Right.y Up.y  Forward.y 0 |
     // | Right.z Up.z  Forward.z 0 |
     // | Pos.x   Pos.x Pos.z     1 |
-    
+    //
+    // TODO: also implement the old matrix code that solves gimbal lock and present an option in a menu
+    // to use quarternions or matrices.
     
     
   
