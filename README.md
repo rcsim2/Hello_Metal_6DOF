@@ -9,6 +9,7 @@ Basic heli 6DOF movement using the Metal API.
 
 Boilerplate Xcode Metal project showing how to do basic heli [6DOF](https://en.wikipedia.org/wiki/Six_degrees_of_freedom) movement without [gimbal lock](https://en.wikipedia.org/wiki/Gimbal_lock).
 Also, the infamous XFile.cpp makes it to the net.
+This is not (the begining of) a port of [R/C Sim Sikorsky](blacksphere2.github.io/rcsim.html) to Metal.
 
 ## Video
 Explaining gimbal lock.<p>
