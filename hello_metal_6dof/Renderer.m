@@ -1,3 +1,4 @@
+// Git test10
 //
 //  Renderer.m
 //  hello_metal_6dof
@@ -5,6 +6,7 @@
 //  Created by Rik Goossens on 11/02/2020.
 //  Copyright © 2020 cgdemy.com. All rights reserved.
 //
+
 
 #import <simd/simd.h>
 #import <ModelIO/ModelIO.h>
@@ -21,7 +23,6 @@ static const NSUInteger kMaxBuffersInFlight = 3;
 
 static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
 
-// Git test8
 
 
 @implementation Renderer
