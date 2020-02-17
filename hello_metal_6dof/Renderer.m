@@ -485,24 +485,64 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // TODO: also implement the old matrix code that solves gimbal lock and present an option in a menu
     // to use quarternions or matrices.
     
+  
     
     
     // Mod rot (matrices)
-    // Dit werkt niet??? Zo zouden we toch ook aan de models axes moeten kunnen komen?
-    //    rotationAxis.x = modelMatrix.columns[0][0];
-    //    rotationAxis.y = modelMatrix.columns[0][1];
-    //    rotationAxis.z = modelMatrix.columns[0][2];
-    //    matrix_float4x4 rotXMatrix = matrix4x4_rotation(_modRotX, -rotationAxis);
-    //
-    //    rotationAxis.x = modelMatrix.columns[1][0];
-    //    rotationAxis.y = modelMatrix.columns[1][1];
-    //    rotationAxis.z = modelMatrix.columns[1][2];
-    //    matrix_float4x4  rotYMatrix = matrix4x4_rotation(_modRotY, rotationAxis);
-    //
-    //    rotationAxis.x = modelMatrix.columns[2][0];
-    //    rotationAxis.y = modelMatrix.columns[2][1];
-    //    rotationAxis.z = modelMatrix.columns[2][2];
-    //    matrix_float4x4  rotZMatrix = matrix4x4_rotation(_modRotZ, rotationAxis);
+    // Mmm, in fact we get never get any gimbal lock...
+    // 1. Doing rotations around the origin axes gives no true gimbal lock: it only switches controls:
+    // e.g. yaw left 90 deg. then roll will have become pitch and pitch roll, from the perspective of the
+    // model. From the perspective of the world axis the rotations are correct of course.
+    // 2. Here we also get no gimbal lock. At the origin we now always get rotations along the model axes.
+    // (which is what we want) but once we move away from the origin, rotations are still around world axes.
+    // If we do it like this we also do not get gimbal lock. Rather, the problem is that once we are not
+    // at the origin, rotation will still be along origin axes. Even when we try to do that along
+    // model axes.
+    // Hier moeten we die dubbele truc toepassen: vRight, vUp, vForward every frame updaten; heli naar
+    // origin translaten, rotatie don, en dan terug.
+    // Nee, die laatste stap deden we niet in XFile.cpp. Dat was een bedachte oplossing die nooit heeft gewerkt.
+    // De truc is je model vectoren updaten met de rotatie matrices en dan roteren om die vertices.
+    // Maar waarom lukt dat zo niet? De model matrix zou de model orientatie axes toch moeten bevatten?
+    // Of werkt het zo: we doen translatie, en dan bevat de matrix niet meer de juiste model vectoren?
+    // Check dit.
+    // 3. We had our matrices in the wrong order at multiplication. modelMatrix must be first. Remember:
+    // matrix multiplication is not commutative. We now always get rotation around the model origin.
+    // Problem is that rotation is al messed up. What's going on?
+    // We were using the model axis. Now we use the world axes. And all of a sudden we get proper 6DOF heli
+    // movement and rotation. Why? Without doing any of the vector update stuff...
+    // We must check with prpper model whether tha rotation will not skew the model and rotation will stay correct
+    // but it looks good. Euler angle rotation without gimbal lock and around the model origin.
+    // It also does not matter whether we do translation before or after the rotation. Matrix order at
+    // multiplication does matter of course: modelMatrix first.
+    // Who would've thunk? Correct 6DOF heli movement using matrices without gimbal lock, skewing,
+    // and correctly rotating around the model axes. Whereas it looks we are always doing rotations
+    // around the world axes? Why does this work at all? It never worked!
+    // So the trick is using a global modelMatrix (of course) and just making sure matrix multiplication
+    // order is correct.
+    printf("%f\n", modelMatrix.columns[0][0]);
+    printf("%f\n", modelMatrix.columns[0][1]);
+    printf("%f\n\n", modelMatrix.columns[0][2]);
+    
+                     //Method 1. world axes //Method 2. model axes
+    rotationAxis.x = 1.0; //modelMatrix.columns[0][0]; //1.0; //
+    rotationAxis.y = 0.0; //modelMatrix.columns[0][1]; //0.0; //
+    rotationAxis.z = 0.0; //modelMatrix.columns[0][2]; //0.0; //
+    matrix_float4x4 rotXMatrix = matrix4x4_rotation(_modRotX, rotationAxis);
+    
+    rotationAxis.x = 0.0; //modelMatrix.columns[1][0]; //0.0; //
+    rotationAxis.y = 1.0; //modelMatrix.columns[1][1]; //1.0; //
+    rotationAxis.z = 0.0; //modelMatrix.columns[1][2]; //0.0; //
+    matrix_float4x4  rotYMatrix = matrix4x4_rotation(_modRotY, rotationAxis);
+    
+    rotationAxis.x = 0.0; //modelMatrix.columns[2][0]; //0.0; //
+    rotationAxis.y = 0.0; //modelMatrix.columns[2][1]; //0.0; //
+    rotationAxis.z = 1.0; //modelMatrix.columns[2][2]; //1.0; //
+    matrix_float4x4  rotZMatrix = matrix4x4_rotation(_modRotZ, rotationAxis);
+    
+                                 // Method 3. modelMatrix first
+    modelMatrix = matrix_multiply(modelMatrix, rotXMatrix); // Pitch
+    modelMatrix = matrix_multiply(modelMatrix, rotYMatrix); // Yaw
+    modelMatrix = matrix_multiply(modelMatrix, rotZMatrix); // Roll
         
         
         // From Xfile.cpp
@@ -558,7 +598,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // YYYYYYYYYeeeeessssssssss!!!!!!!!!!!!!!!!!
     matrix_float4x4 matTrans = matrix4x4_translation(_modX, _modY, _modZ);
     //
-    modelMatrix = matrix_multiply(modelMatrix, matTrans); // order is crucial!!!
+    modelMatrix = matrix_multiply(modelMatrix, matTrans); // order is crucial!!! modelMatrix first otherwise we get collective along world axes
     
 
     matrix_float4x4 matRot;
@@ -566,25 +606,11 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     qRot = quaternion_rotation_yaw_pitch_roll(_modRotY, _modRotX, _modRotZ);
     matRot = matrix4x4_from_quaternion(qRot);
     //
-    modelMatrix = matrix_multiply(modelMatrix, matRot); // order is crucial!!!
+    //modelMatrix = matrix_multiply(modelMatrix, matRot); // order is crucial!!!
     
     
     
-      // Dit werkt niet??? Zo zouden we toch ook aan de models axes moeten kunnen komen?
-//    rotationAxis.x = modelMatrix.columns[0][0];
-//    rotationAxis.y = modelMatrix.columns[0][1];
-//    rotationAxis.z = modelMatrix.columns[0][2];
-//    matrix_float4x4 rotXMatrix = matrix4x4_rotation(_modRotX, -rotationAxis);
-//
-//    rotationAxis.x = modelMatrix.columns[1][0];
-//    rotationAxis.y = modelMatrix.columns[1][1];
-//    rotationAxis.z = modelMatrix.columns[1][2];
-//    matrix_float4x4  rotYMatrix = matrix4x4_rotation(_modRotY, rotationAxis);
-//
-//    rotationAxis.x = modelMatrix.columns[2][0];
-//    rotationAxis.y = modelMatrix.columns[2][1];
-//    rotationAxis.z = modelMatrix.columns[2][2];
-//    matrix_float4x4  rotZMatrix = matrix4x4_rotation(_modRotZ, rotationAxis);
+    
     
     
     // From Xfile.cpp
