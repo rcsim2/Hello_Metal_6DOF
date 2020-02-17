@@ -28,5 +28,6 @@ A more flexible way to do it here: https://en.wikibooks.org/wiki/OpenGL_Programm
 
 
 ## See also
-https://m.youtube.com/watch?v=k562IriqnlA
+[The Birth of the Bell Helicopter (summary)](https://m.youtube.com/watch?v=k562IriqnlA)
+[The Birth of the Bell Helicopter (Part 1)](https://www.youtube.com/watch?v=uir9Engj4v4)
 https://m.youtube.com/watch?v=DACcyBN5Jng
