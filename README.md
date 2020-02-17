@@ -29,4 +29,4 @@ A more flexible way to do it here: https://en.wikibooks.org/wiki/OpenGL_Programm
 
 ## See also
 *[The Birth of the Bell Helicopter](https://www.youtube.com/watch?v=uir9Engj4v4&list=PL63C95D4821B4CFCE)
-https://m.youtube.com/watch?v=DACcyBN5Jng
+*[Philosophy of Physics](https://m.youtube.com/watch?v=DACcyBN5Jng)
