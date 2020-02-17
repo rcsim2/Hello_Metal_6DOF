@@ -27,3 +27,6 @@ http://www.haroldserrano.com/blog/rendering-text-using-opengl-es
 A more flexible way to do it here: https://en.wikibooks.org/wiki/OpenGL_Programming/Modern_OpenGL_Tutorial_Text_Rendering_01
 
 
+## See also
+https://m.youtube.com/watch?v=k562IriqnlA
+https://m.youtube.com/watch?v=DACcyBN5Jng
