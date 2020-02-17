@@ -11,7 +11,7 @@ Boilerplate Xcode Metal project showing how to do basic heli [6DOF](https://en.w
 Also, the infamous XFile.cpp makes it to the net.
 
 ## Video
-Explaining gimbal lock.
+Explaining gimbal lock.<p>
 [![IGimbal lock video](http://img.youtube.com/vi/q0jgqeS_ACM/0.jpg)](https://www.youtube.com/watch?v=q0jgqeS_ACM)
 
 
