@@ -456,7 +456,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // terug transleren.
     // En bovendien gebruikten we in XFile.cpp toch gewoon Euler angle rotation. Maar de echte truc is
     // dat je moet dat doen om de model axes waarbij je die model axes elke
-    // frame ook moet updaten met rotatie. En je hebt Gram-Schmidt orthogonalization nodig.
+    // frame ook moet updaten met de rotatie. En je hebt Gram-Schmidt orthogonalization nodig.
     // Een hoop gedoe dus. Kijk hiervoor in XFile.cpp waar al deze matrix rotatie code aanwezig is.
     // Maar uiteindelijk hebben we ook in XFile.cpp gemakkelijk gedaan en quaternions gebruikt en wel met:
     // D3DXQuaternionRotationYawPitchRoll()

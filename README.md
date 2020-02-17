@@ -16,6 +16,9 @@ Explaining gimbal lock.<p>
 [![IGimbal lock video](http://img.youtube.com/vi/q0jgqeS_ACM/0.jpg)](https://www.youtube.com/watch?v=q0jgqeS_ACM)
 
 
+[![Euler (gimbal lock) Explained](http://img.youtube.com/vi/zc8b2Jo7mno/0.jpg)](https://www.youtube.com/watch?v=zc8b2Jo7mno)
+
+
 
 ## History
 The project started as a port of https://github.com/haroldserrano/renderingTextUsingOpenGLiniOS to Metal but turned into something completely different. Only the font atlas remains...
