@@ -516,9 +516,11 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // multiplication does matter of course: modelMatrix first.
     // Who would've thunk? Correct 6DOF heli movement using matrices without gimbal lock, skewing,
     // and correctly rotating around the model axes. Whereas it looks we are always doing rotations
-    // around the world axes? Why does this work at all? It never worked!
+    // around the world axes? Why does this work at all? It never worked before!
     // So the trick is using a global modelMatrix (of course) and just making sure matrix multiplication
-    // order is correct.
+    // order is correct. And just using world axes for setting the rotation matrices!!!
+    // It seems that is just what we need: we have our global modelMatrix which every frame just gets
+    // a small delta rotation update.
     printf("%f\n", modelMatrix.columns[0][0]);
     printf("%f\n", modelMatrix.columns[0][1]);
     printf("%f\n\n", modelMatrix.columns[0][2]);
