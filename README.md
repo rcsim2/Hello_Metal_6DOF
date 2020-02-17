@@ -16,6 +16,9 @@ Explaining gimbal lock.<p>
 [![IGimbal lock video](http://img.youtube.com/vi/q0jgqeS_ACM/0.jpg)](https://www.youtube.com/watch?v=q0jgqeS_ACM)
 
 
+[![Euler (gimbal lock) Explained](http://img.youtube.com/vi/zc8b2Jo7mno/0.jpg)](https://www.youtube.com/watch?v=zc8b2Jo7mno)
+
+
 
 ## History
 The project started as a port of https://github.com/haroldserrano/renderingTextUsingOpenGLiniOS to Metal but turned into something completely different. Only the font atlas remains...
@@ -29,3 +32,4 @@ A more flexible way to do it here: https://en.wikibooks.org/wiki/OpenGL_Programm
 ## See also
 * [The Birth of the Bell Helicopter](https://www.youtube.com/watch?v=uir9Engj4v4&list=PL63C95D4821B4CFCE)
 * [Philosophy of Physics](https://m.youtube.com/watch?v=DACcyBN5Jng)
+* [Quaternions and spatial rotation](https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation)
