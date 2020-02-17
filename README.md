@@ -15,11 +15,13 @@ Also, he infamous XFile.cpp makes it to the net.
 
 
 
-Started as https://github.com/haroldserrano/renderingTextUsingOpenGLiniOS.
-But turned into something completely different. Only the font atlas remains...
+## History
+The project started as https://github.com/haroldserrano/renderingTextUsingOpenGLiniOS but turned into something
+completely different. Only the font atlas remains...
 
 The complete tutorial on how to render Text using OpenGL can be found here:
 http://www.haroldserrano.com/blog/rendering-text-using-opengl-es
 
 A more flexible way to do it here: https://en.wikibooks.org/wiki/OpenGL_Programming/Modern_OpenGL_Tutorial_Text_Rendering_01
+
 
