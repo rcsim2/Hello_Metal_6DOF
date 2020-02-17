@@ -473,12 +473,72 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // | Right.z Up.z  Forward.z 0 |
     // | Pos.x   Pos.x Pos.z     1 |
     //
+    // See: https://www.youtube.com/watch?v=zc8b2Jo7mno
+    // FPS-games gebruiken ook de gimbal sequence die gebruikt wordt in Maya: y->x->z
+    // De belangrijkste as eerst: y (yaw or pan); dan de volgende: x (pitch or tilt) [waarbij shooters een
+    // beperking in up en down direction aanbrengen om gimbal lock te voor komen]; en als laatste: z (roll
+    // or bank) omdat een camera bijna nooit rolled (alleen in Dutch angle shots).
+    // Met een heli game mag zo'n beperking er niet zijn: er moet altijd volledige rotatie mogelijk zijn.
+    // Dit doe je door te draaien om de model axes. Hiervoor moet je dus de model axes ook elke frame
+    // updaten.
     // TODO: also implement the old matrix code that solves gimbal lock and present an option in a menu
     // to use quarternions or matrices.
     
     
+    
+    // Mod rot (matrices)
+    // Dit werkt niet??? Zo zouden we toch ook aan de models axes moeten kunnen komen?
+    //    rotationAxis.x = modelMatrix.columns[0][0];
+    //    rotationAxis.y = modelMatrix.columns[0][1];
+    //    rotationAxis.z = modelMatrix.columns[0][2];
+    //    matrix_float4x4 rotXMatrix = matrix4x4_rotation(_modRotX, -rotationAxis);
+    //
+    //    rotationAxis.x = modelMatrix.columns[1][0];
+    //    rotationAxis.y = modelMatrix.columns[1][1];
+    //    rotationAxis.z = modelMatrix.columns[1][2];
+    //    matrix_float4x4  rotYMatrix = matrix4x4_rotation(_modRotY, rotationAxis);
+    //
+    //    rotationAxis.x = modelMatrix.columns[2][0];
+    //    rotationAxis.y = modelMatrix.columns[2][1];
+    //    rotationAxis.z = modelMatrix.columns[2][2];
+    //    matrix_float4x4  rotZMatrix = matrix4x4_rotation(_modRotZ, rotationAxis);
+        
+        
+        // From Xfile.cpp
+        // To do rotation with matrices we have to do it like this (and Gram-Schmidt orthogonalization step)
+        // Then we have no gimbal lock. But with quaternions is easier.
+    //    // update object axes
+    //    D3DMath_VectorMatrixMultiply(m_vForward, m_vForward, matRotY);
+    //    D3DMath_VectorMatrixMultiply(m_vRight, m_vRight, matRotY);
+    //    D3DMath_VectorMatrixMultiply(m_vForward, m_vForward, matRotX);
+    //    D3DMath_VectorMatrixMultiply(m_vUp, m_vUp, matRotX);
+    //    D3DMath_VectorMatrixMultiply(m_vRight, m_vRight, matRotZ);
+    //    D3DMath_VectorMatrixMultiply(m_vUp, m_vUp, matRotZ);
+    //
+    //    // rotation
+    //    D3DMATRIX matRot2, matRotX, matRotY, matRotZ;
+    //    D3DUtil_SetRotationMatrix( matRotX, m_vRight, m_fRadsX );
+    //    D3DUtil_SetRotationMatrix( matRotY, m_vUp, m_fRadsY );
+    //    D3DUtil_SetRotationMatrix( matRotZ, m_vForward, m_fRadsZ );
+    //
+    //    // Gram-Schmidt orthogonalization algorithm ////////////////////////////////////
+    //    // perform base vector regeneration
+    //    // (needn't do this every framemove)
+    //    // TODO: we are still drifting after several rolls and pitches. Solve it!
+    //    // DONE: it was a matrix multiplication order prob, nothing wrong here
+    //    m_vForward = Normalize(m_vForward); // just normalize the most important vector
+    //    m_vUp = Normalize( m_vUp - ( DotProduct(m_vUp, m_vForward)*m_vForward ) ); // the Gram-Schmidt step
+    //    m_vRight = Normalize( CrossProduct(m_vForward, m_vUp) );
+    //
+    //    // or alternatively:
+    //    //m_vRight = Normalize( CrossProduct(m_vUp, m_vForward) );
+    //    //m_vUp = Normalize( CrossProduct(m_vForward, m_vRight) );
+
+
+    
+    
   
-    // Mod rot (with quaternions)
+    // Mod rot (quaternions)
     // From XFile.cpp
 //    // Quaternions //////////////////////////////////////////////////////////////////
 //    // Yyyyyyyyyyyyoooooooooooo!!!
@@ -509,7 +569,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     
     
     
-    
+      // Dit werkt niet??? Zo zouden we toch ook aan de models axes moeten kunnen komen?
 //    rotationAxis.x = modelMatrix.columns[0][0];
 //    rotationAxis.y = modelMatrix.columns[0][1];
 //    rotationAxis.z = modelMatrix.columns[0][2];
