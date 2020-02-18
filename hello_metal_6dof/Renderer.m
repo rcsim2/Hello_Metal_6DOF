@@ -500,11 +500,26 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     
     
     // Mod rot (matrices)
+    // The gimbal lock that never was.
+    // Je moet onderscheid maken tussen twee problemen:
+    //
+    // 1. Gimbal lock
+    // 2. Rotation around world axes instead of model axes.
+    //
+    // Probleem 1: kom je tegen als je een local modelMatrix gebruikt in je gameloop die je elke frame opnieuw
+    // initieert waarop je grote rotatiehoeken toepast via een matrix verkregen met angle/axis rotation.
+    // De oplossing hiervoor is een global modelMatrix te gebruiken in je gameloop waarop je elke keer
+    // kleine rotatiehoeken toepast. Dan kan er nooit gimbal lock ontstaan. (Dat deden we dus al).
+    //
+    // Probleem 2: kom je tegen als je niet de juiste volgorde hanteert bij matrix multiplicatie.
+    // Matrix multiplicatie is non commutative: modelMatrix moet eerst.
+    //
+    // // NOTE: comment below is retained but based on having the wrong multiplication order.
     // Mmm, in fact we get never get any gimbal lock...
-    // 1. Doing rotations around the origin axes gives no true gimbal lock: it only switches controls:
+    // Method 1. Doing rotations around the origin axes gives no true gimbal lock: it only switches controls:
     // e.g. yaw left 90 deg. then roll will have become pitch and pitch roll, from the perspective of the
     // model. From the perspective of the world axis the rotations are correct of course.
-    // 2. Here we also get no gimbal lock. At the origin we now always get rotations along the model axes.
+    // Method 2. Here we also get no gimbal lock. At the origin we now always get rotations along the model axes.
     // (which is what we want) but once we move away from the origin, rotations are still around world axes.
     // If we do it like this we also do not get gimbal lock. Rather, the problem is that once we are not
     // at the origin, rotation will still be along origin axes. Even when we try to do that along
@@ -516,12 +531,12 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // Maar waarom lukt dat zo niet? De model matrix zou de model orientatie axes toch moeten bevatten?
     // Of werkt het zo: we doen translatie, en dan bevat de matrix niet meer de juiste model vectoren?
     // Check dit.
-    // 3. We had our matrices in the wrong order at multiplication. modelMatrix must be first. Remember:
+    // Method 3. We had our matrices in the wrong order at multiplication. modelMatrix must be first. Remember:
     // matrix multiplication is not commutative. We now always get rotation around the model origin.
     // Problem is that rotation is al messed up. What's going on?
     // We were using the model axis. Now we use the world axes. And all of a sudden we get proper 6DOF heli
     // movement and rotation. Why? Without doing any of the vector update stuff...
-    // We must check with prpper model whether tha rotation will not skew the model and rotation will stay correct
+    // We must check with proper model whether tha rotation will not skew the model and rotation will stay correct
     // but it looks good. Euler angle rotation without gimbal lock and around the model origin.
     // It also does not matter whether we do translation before or after the rotation. Matrix order at
     // multiplication does matter of course: modelMatrix first.
@@ -537,9 +552,28 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // TODO: without all the extra stuff for matrices lets put a timer on both and see who wins out.
     // DONE: matrix vs quaternion 0.42 - 0.11 ms (over 60 frames). Quaternion still wins.
     // See also: https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Performance_comparisons
-    //printf("%f\n", modelMatrix.columns[0][0]);
-    //printf("%f\n", modelMatrix.columns[0][1]);
-    //printf("%f\n\n", modelMatrix.columns[0][2]);
+    // TODO: try to consciously create gimbal lock. (Use a new project, don't do that to good code here.)
+    //
+    // HELL: matrix_float4x4 has the position in the last column instead of the last row!!!
+    // We knew they were column order first.
+    // See: https://developer.apple.com/documentation/accelerate/working_with_matrices?language=objc
+    // But why store position in the last column? Look at matrix4x4_translation() that is doing that shit.
+    // No, it isn't. What's going on? Is matrix_multiply() doing it?
+    // Look here: https://en.wikipedia.org/wiki/Translation_(geometry)#Matrix_representation
+    // Looks like Direct3D and OpenGL are doing it ass backwards? No, of course it is Apple:
+    // See: https://en.wikipedia.org/wiki/Row-_and_column-major_order
+    // But that has only to do with the memory layout.
+    // Here it is to do with the convention of where to store the position in a 4x4 matrix:
+    // OpenGL and Direct3D: posx, posy, posz: [0][3] [1][3] [2][3]
+    // Metal              : posx, posy, posz: [3][0] [3][1] [3][2]
+    //////////////////////////////////////////////////////////////////
+    
+    // Print matrix
+    printf("% f % f % f % f\n",   modelMatrix.columns[0][0], modelMatrix.columns[1][0], modelMatrix.columns[2][0], modelMatrix.columns[3][0]);
+    printf("% f % f % f % f\n",   modelMatrix.columns[0][1], modelMatrix.columns[1][1], modelMatrix.columns[2][1], modelMatrix.columns[3][1]);
+    printf("% f % f % f % f\n",   modelMatrix.columns[0][2], modelMatrix.columns[1][2], modelMatrix.columns[2][2], modelMatrix.columns[3][2]);
+    printf("% f % f % f % f\n\n", modelMatrix.columns[0][3], modelMatrix.columns[1][3], modelMatrix.columns[2][3], modelMatrix.columns[3][3]);
+ 
     
     //time_t start, end;
     
