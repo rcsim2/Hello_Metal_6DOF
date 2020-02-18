@@ -33,7 +33,7 @@ Explaining gimbal lock.<p>
 
 *Tareq Alsaadi, Cape Town, South-Africa, June, 2019*
 
-1941-2019 => one human life's worth of technological progress.
+<!--1941-2019 => one human life's worth of technological progress.-->
 
 ## Project History
 The project started as a port of https://github.com/haroldserrano/renderingTextUsingOpenGLiniOS to Metal but turned into something completely different. Only the font atlas remains...
