@@ -13,7 +13,7 @@ This is not (the begining of) a port of [R/C Sim Sikorsky](https://blacksphere2.
 
 ## Video
 Explaining gimbal lock.<p>
-[![IGimbal lock video](http://img.youtube.com/vi/q0jgqeS_ACM/0.jpg)](https://www.youtube.com/watch?v=q0jgqeS_ACM)
+[![Gimbal lock video](http://img.youtube.com/vi/q0jgqeS_ACM/0.jpg)](https://www.youtube.com/watch?v=q0jgqeS_ACM)
 
 
 [![Euler (gimbal lock) Explained](http://img.youtube.com/vi/zc8b2Jo7mno/0.jpg)](https://www.youtube.com/watch?v=zc8b2Jo7mno)
@@ -22,6 +22,12 @@ Explaining gimbal lock.<p>
 
 ## History
 ![alt text](Model_helicopter_being_controlled_by_its_creator_Arthur_M._Young.jpg "Arthur M. Young")
+
+## Present
+[![Tareq Alsaadi](http://img.youtube.com/vi/YCb5TcEmdow/0.jpg)](https://www.youtube.com/watch?v=YCb5TcEmdow)
+
+
+
 
 The project started as a port of https://github.com/haroldserrano/renderingTextUsingOpenGLiniOS to Metal but turned into something completely different. Only the font atlas remains...
 
