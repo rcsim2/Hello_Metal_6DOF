@@ -25,7 +25,7 @@ Explaining gimbal lock.<p>
 
 *Arthur M. Young, Paoli, Pennsylvania, April 16, 1941*
 
-[![Arthur M. Young](http://img.youtube.com/vi/uir9Engj4v4?t=525/0.jpg)](https://youtu.be/uir9Engj4v4?t=525)
+[![Arthur M. Young](http://img.youtube.com/vi/uir9Engj4v4/0.jpg)](https://youtu.be/uir9Engj4v4?t=525)
 
 
 ## Present
