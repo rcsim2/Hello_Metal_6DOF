@@ -76,6 +76,9 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     vector_float3 vUp;
     vector_float3 vForward;
     
+    double time_taken;
+    double time_taken2;
+    int frame;
     
 }
 
@@ -118,6 +121,14 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     vRight   = vector3( 1.0f, 0.0f, 0.0f );
     vUp      = vector3( 0.0f, 1.0f, 0.0f );
     vForward = vector3( 0.0f, 0.0f, 1.0f );
+    
+    time_taken = 0.0;
+    time_taken2 = 0.0;
+    frame = 0;
+    
+    
+    
+    
     
     
     view.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
@@ -521,9 +532,17 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // order is correct. And just using world axes for setting the rotation matrices!!!
     // It seems that is just what we need: we have our global modelMatrix which every frame just gets
     // a small delta rotation update.
-    printf("%f\n", modelMatrix.columns[0][0]);
-    printf("%f\n", modelMatrix.columns[0][1]);
-    printf("%f\n\n", modelMatrix.columns[0][2]);
+    // But why did we get skewed models in XFile.cpp with Direct3D and why did we have to do all the vector
+    // updates and the Gram-Schmidt stuff to get it right????
+    // TODO: without all the extra stuff for matrices lets put a timer on both and see who wins out.
+    //printf("%f\n", modelMatrix.columns[0][0]);
+    //printf("%f\n", modelMatrix.columns[0][1]);
+    //printf("%f\n\n", modelMatrix.columns[0][2]);
+    
+    //time_t start, end;
+    
+    //time(&start);
+clock_t start = clock();
     
                      //Method 1. world axes //Method 2. model axes
     rotationAxis.x = 1.0; //modelMatrix.columns[0][0]; //1.0; //
@@ -545,7 +564,18 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     modelMatrix = matrix_multiply(modelMatrix, rotXMatrix); // Pitch
     modelMatrix = matrix_multiply(modelMatrix, rotYMatrix); // Yaw
     modelMatrix = matrix_multiply(modelMatrix, rotZMatrix); // Roll
-        
+    
+    //time(&end);
+clock_t end = clock();
+    
+    time_taken += (double)end - start;
+    frame++;
+    if (frame % 60 == 0) {
+        printf("Time m: %lf ms\n", time_taken * 1000/CLOCKS_PER_SEC);
+        time_taken = 0.0;
+    }
+    // 0,42 ms
+    
         
         // From Xfile.cpp
         // To do rotation with matrices we have to do it like this (and Gram-Schmidt orthogonalization step)
@@ -601,16 +631,25 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     matrix_float4x4 matTrans = matrix4x4_translation(_modX, _modY, _modZ);
     //
     modelMatrix = matrix_multiply(modelMatrix, matTrans); // order is crucial!!! modelMatrix first otherwise we get collective along world axes
-    
 
+    
+clock_t start2 = clock();
+    
     matrix_float4x4 matRot;
     quaternion_float qRot;
     qRot = quaternion_rotation_yaw_pitch_roll(_modRotY, _modRotX, _modRotZ);
     matRot = matrix4x4_from_quaternion(qRot);
     //
-    //modelMatrix = matrix_multiply(modelMatrix, matRot); // order is crucial!!!
+    modelMatrix = matrix_multiply(modelMatrix, matRot); // order is crucial!!!
     
+clock_t end2 = clock();
     
+    time_taken2 += (double)end2 - start2;
+    if (frame % 60 == 0) {
+        printf("Time q: %lf ms\n\n", time_taken2 * 1000/CLOCKS_PER_SEC);
+        time_taken2 = 0.0;
+    }
+    // 0.11 ms (quaternions win)
     
     
     
