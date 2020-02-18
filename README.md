@@ -23,12 +23,12 @@ Explaining gimbal lock.<p>
 ## History
 ![alt text](Model_helicopter_being_controlled_by_its_creator_Arthur_M._Young.jpg "Arthur M. Young")
 
-*Arthur M. Young*
+*Arthur M. Young, Paoli, Pennsylvania, April 16, 1941*
 
 ## Present
 [![Tareq Alsaadi](http://img.youtube.com/vi/YCb5TcEmdow/0.jpg)](https://www.youtube.com/watch?v=YCb5TcEmdow)
 
-*Tareq Alsaadi*
+*Tareq Alsaadi, Cape Town, South-Africa, June, 2019*
 
 
 ## Project History
