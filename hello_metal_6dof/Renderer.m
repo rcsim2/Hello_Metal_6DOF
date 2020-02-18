@@ -126,7 +126,9 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     time_taken2 = 0.0;
     frame = 0;
     
-    
+    // transparent text
+    // or does this make the entire window transparent?
+    //view.layer.isOpaque = false;
     
     
     
@@ -196,6 +198,24 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     pipelineStateDescriptor2.fragmentFunction = fragmentFunction;
     pipelineStateDescriptor2.vertexDescriptor = _mtlVertexDescriptor;
     pipelineStateDescriptor2.colorAttachments[0].pixelFormat = view.colorPixelFormat;
+    
+    // TODO: transparent textures for the font atlas
+    //pipelineStateDescriptor2.isAlphaToCoverageEnabled = true;
+    //pipelineStateDescriptor2.colorAttachments[0].pixelFormat = bgra8Unorm;
+    //pipelineStateDescriptor2.colorAttachments[0].isBlendingEnabled = true;
+    //pipelineStateDescriptor2.colorAttachments[0].destinationRGBBlendFactor = oneMinusSourceAlpha;
+    //pipelineStateDescriptor2.colorAttachments[0].destinationAlphaBlendFactor = oneMinusSourceAlpha;
+    // Yyyyyesss!!!
+    pipelineStateDescriptor2.colorAttachments[0].blendingEnabled = true;
+    pipelineStateDescriptor2.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor2.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor2.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorDestinationAlpha;
+    pipelineStateDescriptor2.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorDestinationAlpha;
+    pipelineStateDescriptor2.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineStateDescriptor2.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusBlendAlpha;
+    
+    
+    
     pipelineStateDescriptor2.depthAttachmentPixelFormat = view.depthStencilPixelFormat;
     pipelineStateDescriptor2.stencilAttachmentPixelFormat = view.depthStencilPixelFormat;
 
