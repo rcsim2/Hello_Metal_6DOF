@@ -21,6 +21,7 @@ Explaining gimbal lock.<p>
 
 
 ## History
+![alt text](Model_helicopter_being_controlled_by_its_creator_Arthur_M._Young.jpg "Arthur M. Young")
 The project started as a port of https://github.com/haroldserrano/renderingTextUsingOpenGLiniOS to Metal but turned into something completely different. Only the font atlas remains...
 
 The complete tutorial on how to render Text using OpenGL can be found here:
