@@ -22,10 +22,11 @@ Explaining gimbal lock.<p>
 
 ## History
 ![alt text](Model_helicopter_being_controlled_by_its_creator_Arthur_M._Young.jpg "Arthur M. Young")
+Arthur M. Young
 
 ## Present
 [![Tareq Alsaadi](http://img.youtube.com/vi/YCb5TcEmdow/0.jpg)](https://www.youtube.com/watch?v=YCb5TcEmdow)
-
+Tareq Alsaadi
 
 
 ## Project History
