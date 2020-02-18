@@ -28,7 +28,7 @@ Explaining gimbal lock.<p>
 
 
 
-
+## Project History
 The project started as a port of https://github.com/haroldserrano/renderingTextUsingOpenGLiniOS to Metal but turned into something completely different. Only the font atlas remains...
 
 The complete tutorial on how to render Text using OpenGL can be found here:
