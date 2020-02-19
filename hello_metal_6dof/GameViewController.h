@@ -14,7 +14,14 @@
 // Our macOS view controller.
 @interface GameViewController : NSViewController
 
-// Pointer to our the view's window
+// Pointer to the view's window
 @property (readwrite, nonatomic) NSWindow* window;
 
 @end
+
+
+// No beeps
+@interface MTKViewSub : MTKView
+
+@end
+

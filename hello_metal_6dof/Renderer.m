@@ -530,6 +530,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // initieert waarop je grote rotatiehoeken toepast via een matrix verkregen met angle/axis rotation.
     // De oplossing hiervoor is een global modelMatrix te gebruiken in je gameloop waarop je elke keer
     // kleine rotatiehoeken toepast. Dan kan er nooit gimbal lock ontstaan. (Dat deden we dus al).
+    // Het maakt dan niet meer uit of je met matrices of quaternionen werkt.
     //
     // Probleem 2: kom je tegen als je niet de juiste volgorde hanteert bij matrix multiplicatie.
     // Matrix multiplicatie is non commutative: modelMatrix moet eerst.
@@ -556,7 +557,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // Problem is that rotation is al messed up. What's going on?
     // We were using the model axis. Now we use the world axes. And all of a sudden we get proper 6DOF heli
     // movement and rotation. Why? Without doing any of the vector update stuff...
-    // We must check with proper model whether tha rotation will not skew the model and rotation will stay correct
+    // We must check with proper model whether that rotation will not skew the model and rotation will stay correct
     // but it looks good. Euler angle rotation without gimbal lock and around the model origin.
     // It also does not matter whether we do translation before or after the rotation. Matrix order at
     // multiplication does matter of course: modelMatrix first.
@@ -572,6 +573,7 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     // TODO: without all the extra stuff for matrices lets put a timer on both and see who wins out.
     // DONE: matrix vs quaternion 0.42 - 0.11 ms (over 60 frames). Quaternion still wins.
     // See also: https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Performance_comparisons
+    // See: http://weitz.de/euler/
     // TODO: try to consciously create gimbal lock. (Use a new project, don't do that to good code here.)
     //
     // HELL: matrix_float4x4 has the position in the last column instead of the last row!!!
@@ -589,10 +591,10 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     //////////////////////////////////////////////////////////////////
     
     // Print matrix
-    printf("% f % f % f % f\n",   modelMatrix.columns[0][0], modelMatrix.columns[1][0], modelMatrix.columns[2][0], modelMatrix.columns[3][0]);
-    printf("% f % f % f % f\n",   modelMatrix.columns[0][1], modelMatrix.columns[1][1], modelMatrix.columns[2][1], modelMatrix.columns[3][1]);
-    printf("% f % f % f % f\n",   modelMatrix.columns[0][2], modelMatrix.columns[1][2], modelMatrix.columns[2][2], modelMatrix.columns[3][2]);
-    printf("% f % f % f % f\n\n", modelMatrix.columns[0][3], modelMatrix.columns[1][3], modelMatrix.columns[2][3], modelMatrix.columns[3][3]);
+//    printf("% f % f % f % f\n",   modelMatrix.columns[0][0], modelMatrix.columns[1][0], modelMatrix.columns[2][0], modelMatrix.columns[3][0]);
+//    printf("% f % f % f % f\n",   modelMatrix.columns[0][1], modelMatrix.columns[1][1], modelMatrix.columns[2][1], modelMatrix.columns[3][1]);
+//    printf("% f % f % f % f\n",   modelMatrix.columns[0][2], modelMatrix.columns[1][2], modelMatrix.columns[2][2], modelMatrix.columns[3][2]);
+//    printf("% f % f % f % f\n\n", modelMatrix.columns[0][3], modelMatrix.columns[1][3], modelMatrix.columns[2][3], modelMatrix.columns[3][3]);
  
     
     //time_t start, end;

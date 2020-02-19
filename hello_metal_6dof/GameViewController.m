@@ -13,22 +13,44 @@
 //#include <Carbon/Carbon.h>
 
 
-
+// No beep
+// No go
+// Kondrak code
 // window listener (close and move events)
-@interface MyWindowListener : NSResponder<NSWindowDelegate>
--(void) listen:(NSApplication *) data;
--(void) windowDidMove:(NSNotification *) aNotification;
--(BOOL) windowShouldClose:(id) sender;
-@end
+//@interface MyWindowListener : NSResponder<NSWindowDelegate>
+//-(void) listen:(NSApplication *) data;
+//-(void) windowDidMove:(NSNotification *) aNotification;
+//-(BOOL) windowShouldClose:(id) sender;
+//@end
 
-static MyWindowListener *windowListener = nil;
+//static MyWindowListener *windowListener = nil;
+
+
+
+
+
+// No beeps: Yeeesss!!!
+// Have to subclass MTKView, handle keydown in the subclass and must set MTKViewSub in Storyboard
+@implementation MTKViewSub
+
+- (void)keyDown:(NSEvent *)theEvent {
+    NSLog(@"keyDown Detected");
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
+@end
 
 
 
 
 @implementation GameViewController
 {
-    MTKView *_view;
+    //MTKView *_view;
+    MTKViewSub *_view;
 
     Renderer *_renderer;
     
@@ -49,7 +71,8 @@ static MyWindowListener *windowListener = nil;
 {
     [super viewDidLoad];
 
-    _view = (MTKView *)self.view;
+    //_view = (MTKView *)self.view;
+    _view = (MTKViewSub *)self.view;
 
     _view.device = MTLCreateSystemDefaultDevice();
 
@@ -67,14 +90,30 @@ static MyWindowListener *windowListener = nil;
     _view.delegate = _renderer;
     
     
-    
     // No beeps
+    // Try to get no beeps without subclassing MTKView
+    // No go
+    // See: https://www.oipapio.com/question-4624151
+    // See: https://stackoverflow.com/questions/34456590/handling-input-events-in-a-metalkit-application/60300596#60300596
+    // Here we do have a pointer to GameViewController.
+    // But how can it work? He's installing a handler for the window whereas we should be doing that for
+    // the view. The view's lack of a handler is causing the beeps.
+    //GameViewController *myViewController = self;
+    //[[[myViewController view] window ] makeFirstResponder:myViewController];
+  
+    
+    
+    
+    // No beeps on keydown
+    // Code from Kondrak. Alas, no go.
     // Get pointer to window
     //_window = self.view.window;
-    windowListener = [[MyWindowListener alloc] init];
-    NSApplication *app = [NSApplication sharedApplication];
-    [windowListener listen:app];
+//    windowListener = [[MyWindowListener alloc] init];
+//    NSApplication *app = [NSApplication sharedApplication];
+//    [windowListener listen:app];
     //[app setActivationPolicy:NSApplicationActivationPolicyRegular];
+    
+    
     
     
     // Mouse input
@@ -101,6 +140,8 @@ static MyWindowListener *windowListener = nil;
     // Why here???
     // That is because our view is a MTKView, not a NSView. MTKView does not handle mouse and key events
     // by default.
+    // NOTE: we have now subclassed MTKView and then we can use handlers. But just leave this here and
+    // only handle keydown in the subclass to get rid of the beeps.
     // TODO: We get x 0-1366 and y 0-768 en op basis daarvan kunnen we de camera roteren maar we moeten de
     // camera blijven roteren als de muis tegen de randen aan zit. Op camRotX (pitch) mag natuurlijk wel
     // een begrenzing onder en boven zitten, maar voor camRotY (yaw) moet de player helemaal rond kunnen
@@ -300,7 +341,8 @@ static MyWindowListener *windowListener = nil;
     //////////////
     // NOTE: This is event based repeated key down. For games we need hardware-based low-level continuous
     // keyboard handling like DirectInput which polls the keyboard.
-    // Can I/O Kit do this?
+    // DONE: we solved this by using a bool that is set to false on keyup.
+    // TODO: get rid of the beeps.
     keyMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^(NSEvent *event) {
 
         unichar character = [[event characters] characterAtIndex:0];
@@ -464,19 +506,34 @@ static MyWindowListener *windowListener = nil;
 // It is because the View in Game View Controller is not a NSView but a MTKView which does not
 // handle mouse and key events, so overriding them here is useless. We have to use
 // addLocalMonitorForEventsMatchingMask to install a handler.
-- (void)mouseMoved:(NSEvent *)theEvent
-{
-    //NSPoint locationInView = [self.view convertPoint:[event locationInWindow]
-    //                                   fromView:nil];
-    
-    NSPoint mouseLoc;
-    mouseLoc = [NSEvent mouseLocation]; //get current mouse position
+// Or subclass MTKView
+//- (void)mouseMoved:(NSEvent *)theEvent
+//{
+//    //NSPoint locationInView = [self.view convertPoint:[event locationInWindow]
+//    //                                   fromView:nil];
+//
+//    NSPoint mouseLoc;
+//    mouseLoc = [NSEvent mouseLocation]; //get current mouse position
+//
+//    NSLog(@"Mouse location2:");
+//    NSLog(@"x = %f",  mouseLoc.x);
+//    NSLog(@"y = %f",  mouseLoc.y);
+//
+//}
 
-    NSLog(@"Mouse location2:");
-    NSLog(@"x = %f",  mouseLoc.x);
-    NSLog(@"y = %f",  mouseLoc.y);
-    
+
+
+// No beeps
+// No go: have to subclass MTKView and handle keydown there
+- (void)keyDown:(NSEvent *)theEvent {
+    NSLog(@"keyDown Detected");
 }
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
 
 /* One of many touch event handling methods. */
 //- (void)touchesBeganWithEvent:(NSEvent *)ev {
@@ -508,39 +565,39 @@ static MyWindowListener *windowListener = nil;
 
 // ----------------------
 
-@implementation MyWindowListener
-- (void)listen:(NSApplication *)data
-{
-    // TODO: need pointer to our hello_metal_6dof windows created in Storyboard
-    // We want to use this code to get no beeps in our window at keypress
-    // But Kondrak has created the window programmatically. In this app it is created
-    // by Storyboard. How to get a pointer?
-    NSWindow *window = [[NSApplication sharedApplication] mainWindow];
-    
-    if ([window delegate] == nil) {
-        [window setDelegate:self];
-    }
-
-    [window setAcceptsMouseMovedEvents:YES];
-    [window setNextResponder:self];
-    [[window contentView] setNextResponder:self];
-}
-
-- (void)windowDidMove:(NSNotification *) aNotification
-{
-    //ri.Cvar_Set("vid_xpos", va("%d", (int)[window frame].origin.x))->modified = false;
-    //ri.Cvar_Set("vid_ypos", va("%d", (int)[window frame].origin.y))->modified = false;
-}
-
-- (BOOL)windowShouldClose:(id)sender
-{
-    //in_state->Quit_fp();
-    return YES;
-}
-
-// these empty functions are necessary so that there's no beeping sound when pressing keys
-- (void)flagsChanged:(NSEvent *)theEvent {}
-- (void)keyDown:(NSEvent *)theEvent { NSLog(@"Listener key down:"); }
-- (void)keyUp:(NSEvent *)theEvent {}
-- (void)doCommandBySelector:(SEL)aSelector {}
-@end
+//@implementation MyWindowListener
+//- (void)listen:(NSApplication *)data
+//{
+//    // TODO: need pointer to our hello_metal_6dof windows created in Storyboard
+//    // We want to use this code to get no beeps in our window at keypress
+//    // But Kondrak has created the window programmatically. In this app it is created
+//    // by Storyboard. How to get a pointer?
+//    NSWindow *window = [[NSApplication sharedApplication] mainWindow];
+//
+//    if ([window delegate] == nil) {
+//        [window setDelegate:self];
+//    }
+//
+//    [window setAcceptsMouseMovedEvents:YES];
+//    [window setNextResponder:self];
+//    [[window contentView] setNextResponder:self];
+//}
+//
+//- (void)windowDidMove:(NSNotification *) aNotification
+//{
+//    //ri.Cvar_Set("vid_xpos", va("%d", (int)[window frame].origin.x))->modified = false;
+//    //ri.Cvar_Set("vid_ypos", va("%d", (int)[window frame].origin.y))->modified = false;
+//}
+//
+//- (BOOL)windowShouldClose:(id)sender
+//{
+//    //in_state->Quit_fp();
+//    return YES;
+//}
+//
+//// these empty functions are necessary so that there's no beeping sound when pressing keys
+//- (void)flagsChanged:(NSEvent *)theEvent {}
+//- (void)keyDown:(NSEvent *)theEvent { NSLog(@"Listener key down:"); }
+//- (void)keyUp:(NSEvent *)theEvent {}
+//- (void)doCommandBySelector:(SEL)aSelector {}
+//@end
