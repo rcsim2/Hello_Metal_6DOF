@@ -52,6 +52,9 @@ https://en.wikibooks.org/wiki/OpenGL_Programming/Modern_OpenGL_Tutorial_Text_Ren
 Another one here:<br>
 https://metalbyexample.com/rendering-text-in-metal-with-signed-distance-fields/
 
+And cutting edge here:<br>
+http://sluglibrary.com/
+
 
 ## See also
 * [The Birth of the Bell Helicopter](https://www.youtube.com/watch?v=uir9Engj4v4&list=PL63C95D4821B4CFCE)
