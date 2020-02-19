@@ -19,6 +19,11 @@ Explaining gimbal lock.<p>
 [![Euler (gimbal lock) Explained](http://img.youtube.com/vi/zc8b2Jo7mno/0.jpg)](https://www.youtube.com/watch?v=zc8b2Jo7mno)
 
 
+[![Quaternionen und Gimbal Lock (kardanische Blockade)](http://img.youtube.com/vi/kHFwysRM2ps/0.jpg)](https://www.youtube.com/watch?v=kHFwysRM2ps)
+
+
+
+
 
 ## History
 ![alt text](Model_helicopter_being_controlled_by_its_creator_Arthur_M._Young.jpg "Arthur M. Young")
