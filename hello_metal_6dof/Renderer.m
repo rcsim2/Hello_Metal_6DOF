@@ -749,6 +749,12 @@ clock_t end = clock();
         printf("FPS: %.1f\n", fps);
     }
     
+    // TEST:
+//    float f = self.getFPS; // must run continually
+//    // Only print every sec to prevent flicker
+//    if (frame % 60 == 0)
+//        printf("getFPS: %.1f\n", f);
+    
     
     
         
@@ -1315,5 +1321,31 @@ matrix_float4x4 matrix_perspective_right_hand(float fovyRadians, float aspect, f
 //}
 
 
+//////////
+- (float) getFPS {
+    
+    static float fps;
+    static NSTimeInterval start_time = 0;
+    static int frames = 0;
+    
+    NSTimeInterval current_time = [[NSDate date] timeIntervalSince1970];
+    ++frames;
+    
+    if (current_time - start_time > 1.0)
+    {
+        fps = frames / (current_time - start_time);
+        start_time = current_time;
+        frames = 0;
+    }
+    
+    return fps;
+}
+
+
 
 @end
+
+
+
+
+
