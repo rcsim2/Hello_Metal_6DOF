@@ -80,6 +80,9 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     double time_taken2;
     int frame;
     
+    clock_t start_tick;
+    float fps;
+    
 }
 
 
@@ -629,10 +632,31 @@ clock_t end = clock();
     time_taken += (double)end - start;
     frame++;
     if (frame % 60 == 0) {
-        printf("Time m: %lf ms\n", time_taken * 1000/CLOCKS_PER_SEC);
+        //printf("Time m: %lf ms\n", time_taken * 1000/CLOCKS_PER_SEC);
         time_taken = 0.0;
     }
     // 0,42 ms
+    
+    
+    
+    // get FPS //////////////////////
+    // Waarom krijgen we ± 600 fps ipv 60 ???
+    // See: https://stackoverflow.com/questions/28530798/how-to-make-a-basic-fps-counter/28544279
+    // We meten waarschijnlijk de gameloop hier terwijl de renderloop wordt aangestuurd door een timer.
+    // MTKView heeft een timer gedreven renderloop. Dat kun je ook zien als we eenmaal per 60 frames
+    // printen. Dit gaat precies om de seconde. Renderloop staat dus op 60 fps.
+    // See: _view.preferredFramesPerSecond = 60; in GameViewController.m waarmee we FPS kunnen zetten.
+    //
+    if (frame % 2 == 0) {
+        clock_t delta_ticks = clock() - start_tick;
+        fps = CLOCKS_PER_SEC/delta_ticks;     // CLOCKS_PER_SEC == 1000000
+        if (frame % 60 == 0) // print only every sec
+            printf("FPS: %.1f\n", fps);
+    } else {
+        start_tick = clock();
+    }
+    
+    
     
         
         // From Xfile.cpp
@@ -704,7 +728,7 @@ clock_t end2 = clock();
     
     time_taken2 += (double)end2 - start2;
     if (frame % 60 == 0) {
-        printf("Time q: %lf ms\n\n", time_taken2 * 1000/CLOCKS_PER_SEC);
+        //printf("Time q: %lf ms\n\n", time_taken2 * 1000/CLOCKS_PER_SEC);
         time_taken2 = 0.0;
     }
     // 0.11 ms (quaternions win)

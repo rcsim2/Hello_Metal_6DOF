@@ -90,6 +90,9 @@
     _view.delegate = _renderer;
     
     
+    // FPS
+    _view.preferredFramesPerSecond = 60;
+    
     // No beeps
     // Try to get no beeps without subclassing MTKView
     // No go
