@@ -26,7 +26,8 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
 
 
 @implementation Renderer
-{
+//{ // Hell, why were these brackets here? They prevented us from initializing vars here.
+
     dispatch_semaphore_t _inFlightSemaphore;
     id <MTLDevice> _device;
     id <MTLCommandQueue> _commandQueue;
@@ -80,10 +81,13 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     double time_taken2;
     int frame;
     
-    clock_t start_tick;
+    clock_t start_ticks;
     float fps;
+    int frames = 0;
     
-}
+    NSTimeInterval start_time;
+    
+//} // Go away!
 
 
 
@@ -128,6 +132,14 @@ static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
     time_taken = 0.0;
     time_taken2 = 0.0;
     frame = 0;
+    
+    start_ticks = 0.0;
+    fps = 0.0;
+    frames = 0;
+    
+    start_time = 0.0;
+    
+    
     
     // transparent text
     // or does this make the entire window transparent?
@@ -635,25 +647,106 @@ clock_t end = clock();
         //printf("Time m: %lf ms\n", time_taken * 1000/CLOCKS_PER_SEC);
         time_taken = 0.0;
     }
-    // 0,42 ms
+    // 0,42 milli secs
     
     
     
     // get FPS //////////////////////
-    // Waarom krijgen we ± 600 fps ipv 60 ???
+    // Waarom krijgen we ± 500 fps ipv 60 ???
     // See: https://stackoverflow.com/questions/28530798/how-to-make-a-basic-fps-counter/28544279
     // We meten waarschijnlijk de gameloop hier terwijl de renderloop wordt aangestuurd door een timer.
     // MTKView heeft een timer gedreven renderloop. Dat kun je ook zien als we eenmaal per 60 frames
     // printen. Dit gaat precies om de seconde. Renderloop staat dus op 60 fps.
+    // Mmm, die logica klopt natuurlijk niet want we doen hier frames++...
+    // Zo te zien krijgen we hier toch 60 FPS. Maar waarom clockt ie niet goed?
     // See: _view.preferredFramesPerSecond = 60; in GameViewController.m waarmee we FPS kunnen zetten.
     //
-    if (frame % 2 == 0) {
-        clock_t delta_ticks = clock() - start_tick;
-        fps = CLOCKS_PER_SEC/delta_ticks;     // CLOCKS_PER_SEC == 1000000
-        if (frame % 60 == 0) // print only every sec
-            printf("FPS: %.1f\n", fps);
-    } else {
-        start_tick = clock();
+//    if (frame % 2 == 0) {
+//        clock_t delta_ticks = clock() - start_ticks;
+//        fps = CLOCKS_PER_SEC/delta_ticks;     // CLOCKS_PER_SEC == 1'000'000, so in micro secs
+//        if (frame % 60 == 0) // print only every sec
+//            printf("FPS: %.1f\n", fps);
+//    } else {
+//        start_ticks = clock();
+//    }
+    
+    
+//    // From XFile.cpp
+//    //-----------------------------------------------------------------------------
+//    // Name: GetFPS()
+//    // Desc: Returns FPS.
+//    //-----------------------------------------------------------------------------
+//    FLOAT GetFPS()
+//    {
+//        static FLOAT fFPS      = 0.0f;
+//        static FLOAT fLastTime = 0.0f;
+//        static DWORD dwFrames  = 0L;
+//
+//        // Keep track of the time lapse and frame count
+//        FLOAT fTime = timeGetTime() * 0.001f; // Get current time in seconds
+//        ++dwFrames;
+//
+//        // Update the frame rate once per second
+//        if( fTime - fLastTime > 1.0f )
+//        {
+//            fFPS      = dwFrames / (fTime - fLastTime);
+//            fLastTime = fTime;
+//            dwFrames  = 0L;
+//        }
+//
+//        return fFPS;
+//    }
+    
+    // Mmm, were still getting 500-ish fps. What's going on?
+    // And we print only once every 10 secs. Looks like we are a factor 10 off.
+    // Looks like that timer is off. CLOCKS_PER_SEC is 1'000'000 so we measure micro secs.
+    // But why are we entering if only every 10 secs?
+    // Ah, clock() measures CPU time:
+    // See: https://www.geeksforgeeks.org/clock-function-in-c-c/
+    // The clock() function is defined in the ctime header file. The clock() function returns the
+    // approximate processor time that is consumed by the program. The clock() time depends upon how
+    // the operating system allocate resources to the process that’s why clock() time may be slower or
+    // faster than the actual clock.
+    // There is no guarantee that CLOCKS_PER_SEC == 1 sec
+    // So we cannot use clock() for a real time timer.
+    // Or can we?:
+    // CLOCKS_PER_SEC
+    // Clock ticks per second
+    // This macro expands to an expression representing the number of clock ticks per second.
+    // Clock ticks are units of time of a constant but system-specific length, as those returned by function clock.
+    // Dividing a count of clock ticks by this expression yields the number of seconds.
+    //
+    // Could it be that the Metal timer messes up the clock() to slow down the game loop to 60 FPS????
+//    clock_t current_ticks = clock();
+//    ++frames;
+//
+//    if (current_ticks - start_ticks > CLOCKS_PER_SEC)
+//    {
+//        fps = frames;
+//        start_ticks = current_ticks;
+//        frames = 0;
+//
+//        printf("FPS: %.1f\n", fps);
+//        //printf("CLOCKS_PER_SEC: %d\n", CLOCKS_PER_SEC);
+//    }
+    
+    
+    // TEST: dit print om de sec. dus we zitten echt op 60 FPS
+    //if (frames % 60 == 0) printf("frames: %d\n", frames);
+    
+    
+    // Hè hè, zo krijgen we wel de juiste FPS. Het lijkt er dus inderdaad op dat Metal de clock() vertraagt
+    // om 60 FPS te krijgen, en daarom kunnen we clock() niet meer gebruiken voor real-time timers.
+    NSTimeInterval current_time = [[NSDate date] timeIntervalSince1970];
+    ++frames;
+    
+    if (current_time - start_time > 1.0)
+    {
+        fps = frames / (current_time - start_time);
+        start_time = current_time;
+        frames = 0;
+        
+        printf("FPS: %.1f\n", fps);
     }
     
     
@@ -731,7 +824,7 @@ clock_t end2 = clock();
         //printf("Time q: %lf ms\n\n", time_taken2 * 1000/CLOCKS_PER_SEC);
         time_taken2 = 0.0;
     }
-    // 0.11 ms (quaternions win)
+    // 0.11 milli secs (quaternions win)
     
     
     

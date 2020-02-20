@@ -16,8 +16,8 @@
 
 -(nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)view;
 
+// We use properties to allow these vars to be accessed in GameViewController
 @property (readwrite, nonatomic) float var;
-
 
 @property (readwrite, nonatomic) float modX;
 @property (readwrite, nonatomic) float modY;
