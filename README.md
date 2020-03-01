@@ -60,3 +60,4 @@ http://sluglibrary.com/
 * [The Birth of the Bell Helicopter](https://www.youtube.com/watch?v=uir9Engj4v4&list=PL63C95D4821B4CFCE)
 * [Philosophy of Physics](https://m.youtube.com/watch?v=DACcyBN5Jng)
 * [Quaternions and spatial rotation](https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation)
+* [Gyros](http://rotorworld.co.uk/how-to-understand-gyros/)
