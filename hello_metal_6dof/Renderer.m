@@ -19,6 +19,15 @@
 #import "AAPLMathUtilities.h"
 
 
+// TODO:
+// * Load .OBJ file of model heli and spin rotors
+// * Test version with gimbal lock
+//
+// NOTE: Do all tests in a new project or in a copy of this project. This project can already serve
+// as a good boilerplate game engine: it has proper 6DOF movement and keyboard and mouse control)
+
+
+
 static const NSUInteger kMaxBuffersInFlight = 3;
 
 static const size_t kAlignedUniformsSize = (sizeof(Uniforms) & ~0xFF) + 0x100;
